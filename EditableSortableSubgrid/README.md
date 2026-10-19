@@ -28,7 +28,6 @@ Control version: **1.0.4** · Solution version: **1.0.4.0** · Publisher: **Kona
 |---|---|
 | ![Choice dropdown / 选项下拉菜单](docs/images/choice-dropdown.png) | ![Date picker / 日期选择器](docs/images/date-picker.png) |
 
-Screenshot inventory and optional additions: [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md). / 已有图片与可补充画面见[截图清单](docs/SCREENSHOTS.md)。
 
 ## Features
 
@@ -84,7 +83,6 @@ The formal unmanaged solution project currently lives beside this control folder
 ## Documentation
 
 - [System architecture (中文 / English)](docs/ARCHITECTURE.md)
-- [Screenshot checklist and filenames](docs/SCREENSHOTS.md)
 - [Copy configuration](docs/COPY_CONFIGURATION.md)
 - [Dataverse schema mapping](docs/SCHEMA_MAPPING.md)
 - [Platform compatibility notes](docs/PLATFORM_COMPATIBILITY.md)
@@ -116,7 +114,7 @@ Licensed under the [MIT License](LICENSE). Copyright (c) 2026 KonaLz. Third-part
 
 ### 截图
 
-表格总览、插入行/拖动排序/复制的 GIF，以及编辑、右键菜单、选项和日期截图，已放在上方[截图与演示区域](#screenshots)。文件统一保存在 `docs/images/`，详见[截图清单](docs/SCREENSHOTS.md)。
+表格总览、插入行/拖动排序/复制的 GIF，以及编辑、右键菜单、选项和日期截图，已放在上方[截图与演示区域](#screenshots)。文件统一保存在 `docs/images/`。
 
 ### 功能
 
@@ -172,7 +170,6 @@ Test Harness 适合开发界面，但不能证明真实 Dataverse Web API、原�
 ### 文档
 
 - [系统架构（中文 / English）](docs/ARCHITECTURE.md)
-- [截图清单与文件名](docs/SCREENSHOTS.md)
 - [复制功能配置](docs/COPY_CONFIGURATION.md)
 - [Dataverse 字段映射](docs/SCHEMA_MAPPING.md)
 - [平台兼容性说明](docs/PLATFORM_COMPATIBILITY.md)

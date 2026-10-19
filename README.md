@@ -28,7 +28,6 @@ Control version: **1.0.4** · Solution version: **1.0.4.0** · Publisher: **Kona
 |---|---|
 | ![Choice dropdown / 选项下拉菜单](EditableSortableSubgrid/docs/images/choice-dropdown.png) | ![Date picker / 日期选择器](EditableSortableSubgrid/docs/images/date-picker.png) |
 
-Screenshot inventory and optional additions: [EditableSortableSubgrid/docs/SCREENSHOTS.md](EditableSortableSubgrid/docs/SCREENSHOTS.md). / 已有图片与可补充画面见[截图清单](EditableSortableSubgrid/docs/SCREENSHOTS.md)。
 
 ## Features
 
@@ -84,7 +83,6 @@ This repository includes the solution project at `KonaLzSolution/`. Build both d
 ## Documentation
 
 - [System architecture (中文 / English)](EditableSortableSubgrid/docs/ARCHITECTURE.md)
-- [Screenshot checklist and filenames](EditableSortableSubgrid/docs/SCREENSHOTS.md)
 - [Copy configuration](EditableSortableSubgrid/docs/COPY_CONFIGURATION.md)
 - [Dataverse schema mapping](EditableSortableSubgrid/docs/SCHEMA_MAPPING.md)
 - [Platform compatibility notes](EditableSortableSubgrid/docs/PLATFORM_COMPATIBILITY.md)
@@ -116,7 +114,7 @@ Licensed under the [MIT License](LICENSE). Copyright (c) 2026 KonaLz. Third-part
 
 ### 截图
 
-表格总览、插入行/拖动排序/复制的 GIF，以及编辑、右键菜单、选项和日期截图，已放在上方[截图与演示区域](#screenshots)。文件统一保存在 `EditableSortableSubgrid/docs/images/`，详见[截图清单](EditableSortableSubgrid/docs/SCREENSHOTS.md)。
+表格总览、插入行/拖动排序/复制的 GIF，以及编辑、右键菜单、选项和日期截图，已放在上方[截图与演示区域](#screenshots)。文件统一保存在 `EditableSortableSubgrid/docs/images/`。
 
 ### 功能
 
@@ -172,7 +170,6 @@ Test Harness 适合开发界面，但不能证明真实 Dataverse Web API、原�
 ### 文档
 
 - [系统架构（中文 / English）](EditableSortableSubgrid/docs/ARCHITECTURE.md)
-- [截图清单与文件名](EditableSortableSubgrid/docs/SCREENSHOTS.md)
 - [复制功能配置](EditableSortableSubgrid/docs/COPY_CONFIGURATION.md)
 - [Dataverse 字段映射](EditableSortableSubgrid/docs/SCHEMA_MAPPING.md)
 - [平台兼容性说明](EditableSortableSubgrid/docs/PLATFORM_COMPATIBILITY.md)

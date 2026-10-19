@@ -10,3 +10,4 @@
 **/.wildcard-invalid-backup/
 .DS_Store
 release-assets/
+**/docs/SCREENSHOTS.md
