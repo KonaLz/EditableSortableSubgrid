@@ -14,7 +14,7 @@
 dotnet build KonaLzSolution.cdsproj --configuration Release
 ```
 
-生成的非托管解决方案位于 `bin/Release/KonaLzSolution.zip`。
+生成的非托管解决方案位于 `bin/Release/EditableSortableSubgrid.zip`。
 
 ## 安装
 
@@ -23,3 +23,4 @@ dotnet build KonaLzSolution.cdsproj --configuration Release
 这个正式解决方案包含上述发布者显示名称。`pac pcf push` 使用 CLI 自动生成的临时解决方案，其默认发布者显示名称不会读取本目录配置。
 
 本项目的构建和打包不会自动连接、导入或发布到 Dataverse 环境。
+

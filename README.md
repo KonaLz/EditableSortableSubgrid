@@ -79,7 +79,7 @@ npm start
 
 The test harness is useful for UI development. It does not prove that Web API operations, command-bar integration, lookup metadata, or permissions work in a real Dataverse environment.
 
-This repository includes the solution project at `KonaLzSolution/`. Build both distributable packages from the repository root with `dotnet build KonaLzSolution/KonaLzSolution.cdsproj --configuration Release`. The generated files are `KonaLzSolution/bin/Release/KonaLzSolution.zip` (unmanaged) and `KonaLzSolution/bin/Release/KonaLzSolution_managed.zip` (managed). Do not run `pac pcf push` against a production environment.
+This repository includes the solution project at `KonaLzSolution/`. Build both distributable packages from the repository root with `dotnet build KonaLzSolution/KonaLzSolution.cdsproj --configuration Release`. The generated files are `KonaLzSolution/bin/Release/EditableSortableSubgrid.zip` (unmanaged) and `KonaLzSolution/bin/Release/EditableSortableSubgrid_managed.zip` (managed). Do not run `pac pcf push` against a production environment.
 
 ## Documentation
 
@@ -167,7 +167,7 @@ npm start
 
 Test Harness 适合开发界面，但不能证明真实 Dataverse Web API、原生命令栏、查找元数据或权限配置都能正常工作。
 
-本仓库已包含 `KonaLzSolution/` 解决方案工程。从仓库根目录执行 `dotnet build KonaLzSolution/KonaLzSolution.cdsproj --configuration Release`，即可生成两种可分发包：`KonaLzSolution/bin/Release/KonaLzSolution.zip`（非托管）和 `KonaLzSolution/bin/Release/KonaLzSolution_managed.zip`（托管）。请勿对生产环境运行 `pac pcf push`。
+本仓库已包含 `KonaLzSolution/` 解决方案工程。从仓库根目录执行 `dotnet build KonaLzSolution/KonaLzSolution.cdsproj --configuration Release`，即可生成两种可分发包：`KonaLzSolution/bin/Release/EditableSortableSubgrid.zip`（非托管）和 `KonaLzSolution/bin/Release/EditableSortableSubgrid_managed.zip`（托管）。请勿对生产环境运行 `pac pcf push`。
 
 ### 文档
 
@@ -191,4 +191,5 @@ Test Harness 适合开发界面，但不能证明真实 Dataverse Web API、原�
 ### 许可证
 
 本项目采用 [MIT 许可证](LICENSE)，版权署名为 Copyright (c) 2026 KonaLz。第三方依赖仍遵循各自的许可证。
+
 

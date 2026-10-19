@@ -14,7 +14,8 @@
     <TargetFramework>net462</TargetFramework>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <SolutionRootPath>src</SolutionRootPath>
-    <SolutionPackageType>Both</SolutionPackageType>
+    <SolutionPackageType>Unmanaged</SolutionPackageType>
+    <SolutionPackageZipFilePath>bin\$(Configuration)\EditableSortableSubgrid.zip</SolutionPackageZipFilePath>
   </PropertyGroup>
 
   <!-- 
@@ -57,4 +58,6 @@
   <Import Project="$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.targets" Condition="Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.targets')" />
 
 </Project>
+
+
 
