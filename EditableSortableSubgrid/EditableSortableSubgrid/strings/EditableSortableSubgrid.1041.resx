@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Language_DisplayName" xml:space="preserve"><value>表示言語</value></data>
+  <data name="Language_Description" xml:space="preserve"><value>グリッドで使用する言語を選択します。</value></data>
+  <data name="Language_Auto" xml:space="preserve"><value>ユーザーの言語に従う</value></data>
+  <data name="Language_Chinese" xml:space="preserve"><value>簡体字中国語</value></data>
+  <data name="Language_Japanese" xml:space="preserve"><value>日本語</value></data>
+  <data name="Language_English" xml:space="preserve"><value>英語</value></data>
+  <data name="SortOrder_DisplayName" xml:space="preserve"><value>並び順列</value></data>
+  <data name="SortOrder_Description" xml:space="preserve"><value>行の順序を保存する整数列をバインドします。</value></data>
+  <data name="ParentLookup_DisplayName" xml:space="preserve"><value>親レコード関連列</value></data>
+  <data name="ParentLookup_Description" xml:space="preserve"><value>子テーブルから現在の親レコードへの検索列をバインドします。モデル駆動型サブグリッドでは、利用可能な場合に親 ID を実行時コンテキストから自動取得します。</value></data>
+  <data name="EditableColumns_DisplayName" xml:space="preserve"><value>編集可能な列</value></data>
+  <data name="EditableColumns_Description" xml:space="preserve"><value>任意：編集を許可する論理列名をカンマ区切りで入力します。空欄の場合はテーブルのメタデータから判定します。</value></data>
+  <data name="CopyExcludedColumns_DisplayName" xml:space="preserve"><value>コピーから除外する列</value></data>
+  <data name="CopyExcludedColumns_Description" xml:space="preserve"><value>コピーしない列の論理名をカンマ区切りで入力します（例: hky_externalid,hky_note）。空欄の場合は作成可能な列をコピーします。主キー、自動採番、代替キー、計算列は除外し、親レコードとの関連は維持します。</value></data>
+  <data name="ParentRecordId_DisplayName" xml:space="preserve"><value>親レコード ID</value></data>
+  <data name="ParentRecordId_Description" xml:space="preserve"><value>旧バージョン互換用の非表示フォールバックです。子テーブルのテキスト列にはバインドしないでください。親 ID は利用可能な場合にサブグリッドの実行時コンテキストから取得します。</value></data>
+  <data name="ParentEntityName_DisplayName" xml:space="preserve"><value>親テーブルの論理名</value></data>
+  <data name="ParentEntityName_Description" xml:space="preserve"><value>ポリモーフィック検索列用の旧バージョン互換フォールバックです。</value></data>
+</root>

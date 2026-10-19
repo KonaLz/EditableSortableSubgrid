@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Language_DisplayName" xml:space="preserve"><value>Display language</value></data>
+  <data name="Language_Description" xml:space="preserve"><value>Choose the language used by the grid.</value></data>
+  <data name="Language_Auto" xml:space="preserve"><value>Follow user language</value></data>
+  <data name="Language_Chinese" xml:space="preserve"><value>Simplified Chinese</value></data>
+  <data name="Language_Japanese" xml:space="preserve"><value>Japanese</value></data>
+  <data name="Language_English" xml:space="preserve"><value>English</value></data>
+  <data name="SortOrder_DisplayName" xml:space="preserve"><value>Sort order column</value></data>
+  <data name="SortOrder_Description" xml:space="preserve"><value>Bind the integer column used to persist row order.</value></data>
+  <data name="ParentLookup_DisplayName" xml:space="preserve"><value>Parent relationship column</value></data>
+  <data name="ParentLookup_Description" xml:space="preserve"><value>Bind the child-table lookup that references the current parent. The parent ID is resolved automatically in model-driven subgrids where runtime context is available.</value></data>
+  <data name="EditableColumns_DisplayName" xml:space="preserve"><value>Editable columns</value></data>
+  <data name="EditableColumns_Description" xml:space="preserve"><value>Optional comma-separated logical names allowed for editing; when empty, writable columns are determined from table metadata.</value></data>
+  <data name="CopyExcludedColumns_DisplayName" xml:space="preserve"><value>Columns excluded from copy</value></data>
+  <data name="CopyExcludedColumns_Description" xml:space="preserve"><value>Comma-separated logical column names to omit, e.g. hky_externalid,hky_note. Leave blank to copy all creatable fields. Primary keys, autonumbers, alternate keys and computed fields are excluded automatically. The parent relationship is always preserved.</value></data>
+  <data name="ParentRecordId_DisplayName" xml:space="preserve"><value>Parent record ID</value></data>
+  <data name="ParentRecordId_Description" xml:space="preserve"><value>Legacy hidden fallback. Do not bind this to a child-table text column; the parent ID is resolved from subgrid runtime context where available.</value></data>
+  <data name="ParentEntityName_DisplayName" xml:space="preserve"><value>Parent table logical name</value></data>
+  <data name="ParentEntityName_Description" xml:space="preserve"><value>Legacy hidden fallback for polymorphic parent lookups.</value></data>
+</root>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Language_DisplayName" xml:space="preserve"><value>显示语言</value></data>
+  <data name="Language_Description" xml:space="preserve"><value>选择此表格使用的界面语言。</value></data>
+  <data name="Language_Auto" xml:space="preserve"><value>跟随用户语言</value></data>
+  <data name="Language_Chinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Language_Japanese" xml:space="preserve"><value>日语</value></data>
+  <data name="Language_English" xml:space="preserve"><value>英语</value></data>
+  <data name="SortOrder_DisplayName" xml:space="preserve"><value>排序序号字段</value></data>
+  <data name="SortOrder_Description" xml:space="preserve"><value>绑定用于保存行顺序的整数列。</value></data>
+  <data name="ParentLookup_DisplayName" xml:space="preserve"><value>父记录关联字段</value></data>
+  <data name="ParentLookup_Description" xml:space="preserve"><value>绑定子表中指向当前父记录的查找列。在可获取运行时上下文的模型驱动子网格中，组件会自动读取父记录 ID。</value></data>
+  <data name="EditableColumns_DisplayName" xml:space="preserve"><value>可编辑列</value></data>
+  <data name="EditableColumns_Description" xml:space="preserve"><value>可选：输入允许编辑的逻辑列名，使用逗号分隔；留空时根据表元数据自动判断。</value></data>
+  <data name="CopyExcludedColumns_DisplayName" xml:space="preserve"><value>复制时排除的列</value></data>
+  <data name="CopyExcludedColumns_Description" xml:space="preserve"><value>输入不复制的字段逻辑名，用逗号分隔，例如 hky_externalid,hky_note。留空复制全部可创建字段；自动跳过主键、自动编号、备用键和计算列，始终保留父记录关联。</value></data>
+  <data name="ParentRecordId_DisplayName" xml:space="preserve"><value>父记录 ID</value></data>
+  <data name="ParentRecordId_Description" xml:space="preserve"><value>为兼容旧版本而保留的隐藏备用项。不要绑定到子表文本列；组件会在运行时上下文可用时自动读取父记录 ID。</value></data>
+  <data name="ParentEntityName_DisplayName" xml:space="preserve"><value>父表逻辑名</value></data>
+  <data name="ParentEntityName_Description" xml:space="preserve"><value>多态父查找的旧版本隐藏备用项。</value></data>
+</root>

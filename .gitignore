@@ -1,0 +1,12 @@
+**/node_modules/
+**/node_modules.partial-backup/
+**/obj/
+**/bin/
+**/out/
+**/generated/
+**/*.binlog
+**/*.log
+**/.vs/
+**/.wildcard-invalid-backup/
+.DS_Store
+release-assets/
