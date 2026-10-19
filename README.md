@@ -46,6 +46,7 @@ Control version: **1.0.4** · Solution version: **1.0.4.0** · Publisher: **Kona
 
 ## Requirements and configuration
 
+> [!NOTE]
 > **Before using drag sorting:** Create a writable **Whole Number (integer)** column on the **child table**, then bind the control’s **SortOrder** setting to it. For example, create a column with logical name `new_sortorder`. This column stores row order; without the integer column and binding, drag sorting cannot be saved. The column can stay hidden in the view.
 
 - A Power Apps model-driven app using a **form subgrid**.
@@ -133,6 +134,7 @@ Licensed under the [MIT License](LICENSE). Copyright (c) 2026 KonaLz. Third-part
 
 ### 环境要求与配置
 
+> [!NOTE]
 > **拖动排序前请先创建排序列：** 在**子表**中创建一个可写的**整数列（Whole Number）**，然后将控件的 **SortOrder（排序序号字段）**绑定到该列。例如可以创建逻辑名为 `new_sortorder` 的列。该列用于保存行顺序；没有整数列或未绑定时，拖动后的顺序无法保存。排序列可以在视图中隐藏。
 
 - Power Apps 模型驱动应用中的**表单子网格**。
