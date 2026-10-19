@@ -1,6 +1,6 @@
 {
   "name": "editable-sortable-subgrid",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "KonaLz",
   "license": "MIT",
   "description": "React Dataset PCF for a compact, selectable editable subgrid.",

@@ -4,6 +4,7 @@ import { DndContext, PointerSensor, useSensor, useSensors, DragEndEvent } from "
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { errorDescription } from "../services/Errors";
+import { hasRecordWriteAccess } from "../services/RecordAccess";
 import { commitScalarValue } from "../services/CellValues";
 import { buildCopyPayload, excludedCopyColumns, loadCopyDefinition, loadCopySource, lookupEntitySet } from "../services/CopyRecords";
 import { defaultColumnWidth, loadViewWidths } from "../services/ColumnWidths";
@@ -155,6 +156,7 @@ interface SortableRowProps {
     onCommitLookup: (rowId: string, columnName: string, value: LookupChoice) => void;
     onSaveDraft: (rowId: string) => void;
     editableColumnNames: Set<string>;
+    rowReadOnly: boolean;
     choiceOptions: Record<string, ChoiceOption[]>;
     lookupTargets: Record<string, LookupTarget[]>;
     metadataErrors: Record<string, string>;
@@ -199,10 +201,10 @@ function SortableRow(props: SortableRowProps): React.ReactElement {
                 onMouseEnter={() => props.onHover(row.id)} onClick={() => props.onInsertAfter(row.id)} />
         </td>
         {props.columns.map((column, columnIndex) => {
-            const isEditing = props.editing?.rowId === row.id && props.editing.columnName === column.name;
+            const isEditing = !props.rowReadOnly && props.editing?.rowId === row.id && props.editing.columnName === column.name;
             const value = row.values[column.name] || "";
             const width = props.columnWidths[column.name];
-            const canEdit = props.editableColumnNames.has(column.name.toLowerCase()) && isInlineEditableType(column.dataType);
+            const canEdit = !props.rowReadOnly && props.editableColumnNames.has(column.name.toLowerCase()) && isInlineEditableType(column.dataType);
             const isNumeric = /currency|whole|decimal|floating|number|duration/i.test(column.dataType);
             const isActive = props.activeCell?.rowId === row.id && props.activeCell.columnName === column.name;
             const beginCellEdit = (event?: React.MouseEvent<HTMLTableCellElement>, firstKey?: string) => {
@@ -364,7 +366,11 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
     const [metadataErrors, setMetadataErrors] = React.useState<Record<string, string>>({});
     const [metadataLoading, setMetadataLoading] = React.useState(true);
     const [draftLookups, setDraftLookups] = React.useState<Record<string, LookupChoice>>({});
+    const [recordStates, setRecordStates] = React.useState<{ key: string; values: Record<string, number> }>({ key: "", values: {} });
     const entityName = dataset.getTargetEntityType?.() || "";
+    const stateKey = entityName + ":" + dataKey;
+    const isRowReadOnly = (row: GridRow) => props.isControlDisabled || (!row.isDraft
+        && (recordStates.key !== stateKey || recordStates.values[row.id] !== 0));
     const tableRef = React.useRef<HTMLTableElement | null>(null);
     const copyInProgress = React.useRef(false);
     const resizeSession = React.useRef<{ columnName: string; startX: number; startWidth: number } | null>(null);
@@ -405,6 +411,39 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
     const finishResize = () => { resizeSession.current = null; };
 
     React.useEffect(() => { setRows(sourceRows); }, [dataKey]);
+    React.useEffect(() => {
+        let active = true;
+        setRecordStates({ key: stateKey, values: {} });
+        if (!entityName || dataset.loading || props.isControlDisabled) return () => { active = false; };
+        // Read state independently of the visible view, including when statecode is hidden.
+        void (async () => {
+            const metadata = await getEntityMetadata(entityName);
+            const primaryId = metadata.PrimaryIdAttribute;
+            if (!/^[a-z][a-z0-9_]*$/i.test(primaryId)) throw new Error("Missing primary ID attribute");
+            const ids = sourceRows.map((row) => row.id).filter(isPersistentRecordId);
+            const values: Record<string, number> = {};
+            for (let start = 0; start < ids.length; start += 50) {
+                const batch = ids.slice(start, start + 50);
+                const filter = batch.map((id) => `${primaryId} eq ${id.replace(/[{}]/g, "")}`).join(" or ");
+                const result = await props.webApi.retrieveMultipleRecords(entityName,
+                    `?$select=${primaryId},statecode&$filter=${encodeURIComponent(filter)}`, 50);
+                for (const record of result.entities) {
+                    const id = String(record[primaryId]).toLowerCase();
+                    const sourceId = batch.find((candidate) => candidate.replace(/[{}]/g, "").toLowerCase() === id);
+                    if (sourceId && typeof record.statecode === "number") values[sourceId] = record.statecode;
+                }
+            }
+            // Limit concurrent access checks to avoid flooding the host with requests.
+            for (let start = 0; start < ids.length; start += 5) {
+                await Promise.all(ids.slice(start, start + 5).map(async (id) => {
+                    if (values[id] === 0 && !await hasRecordWriteAccess(props.userId, metadata.EntitySetName, id)) values[id] = -1;
+                }));
+                if (!active) return;
+            }
+            if (active) setRecordStates({ key: stateKey, values });
+        })().catch(() => { if (active) setActionMessage(strings.recordStateError); });
+        return () => { active = false; };
+    }, [stateKey, dataset.loading, props.webApi, props.userId, props.isControlDisabled]);
     React.useEffect(() => { setSelected(getSelectedIds(dataset)); }, [dataset, recordKey]);
     React.useEffect(() => {
         if (!entityName) return;
@@ -532,6 +571,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
         }
     };
     const copySelected = async () => {
+        if (props.isControlDisabled) return;
         if (copyInProgress.current) return;
         const targetIds = selected.includes(contextMenu?.rowId ?? "") ? selected : contextMenu ? [contextMenu.rowId] : selected;
         const targetEntity = dataset.getTargetEntityType?.();
@@ -580,6 +620,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
         }
     };
     const deleteSelected = async () => {
+        if (props.isControlDisabled) return;
         setContextMenu(null);
         try {
             const result = await props.navigation.openConfirmDialog({
@@ -620,10 +661,25 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
             setActionMessage(strings.deleteError);
         }
     };
+    const confirmWritableRow = async (rowId: string): Promise<boolean> => {
+        if (props.isControlDisabled) return false;
+        try {
+            const record = await props.webApi.retrieveRecord(entityName, rowId.replace(/[{}]/g, ""), "?$select=statecode");
+            if (typeof record.statecode !== "number") throw new Error("Missing record state");
+            const metadata = await getEntityMetadata(entityName);
+            const writable = record.statecode === 0 && await hasRecordWriteAccess(props.userId, metadata.EntitySetName, rowId);
+            setRecordStates((current) => current.key === stateKey
+                ? { ...current, values: { ...current.values, [rowId]: writable ? 0 : -1 } } : current);
+            if (writable) return true;
+            setActionMessage(strings.recordReadOnly);
+        } catch { setActionMessage(strings.recordStateError); }
+        setEditing(null);
+        return false;
+    };
     const commitEdit = async (rowId: string, columnName: string, value: string) => {
         const row = rows.find((item) => item.id === rowId);
         const column = columns.find((item) => item.name === columnName);
-        if (!row || !column) return;
+        if (!row || !column || isRowReadOnly(row)) return;
         const updateValue = (item: GridRow) => item.id === rowId
             ? commitScalarValue(item, columnName, value, column.dataType, choiceOptions[columnName.toLowerCase()] ?? [], strings.yes, strings.no)
             : item;
@@ -633,6 +689,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
         }
         if (!isPersistentRecordId(rowId) || !editableColumnNames.has(columnName.toLowerCase())) return;
         try {
+            if (!await confirmWritableRow(rowId)) return;
             const rawValue = dataset.records?.[rowId]?.getValue(columnName);
             const converted = parseColumnValue(value, String((dataset.columns || []).find((item) => item.name === columnName)?.dataType ?? ""), rawValue, fieldMetadata[columnName.toLowerCase()]);
             setActionMessage(strings.saving);
@@ -646,7 +703,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
     };
     const commitLookup = async (rowId: string, columnName: string, value: LookupChoice) => {
         const row = rows.find((item) => item.id === rowId);
-        if (!row) return;
+        if (!row || isRowReadOnly(row)) return;
         if (row.isDraft) {
             setDraftLookups((current) => ({ ...current, [`${rowId}:${columnName}`]: value }));
             setRows((current) => current.map((item) => item.id === rowId ? { ...item, values: { ...item.values, [columnName]: value.label } } : item));
@@ -654,6 +711,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
         }
         if (!isPersistentRecordId(rowId) || !editableColumnNames.has(columnName.toLowerCase())) return;
         try {
+            if (!await confirmWritableRow(rowId)) return;
             const target = (lookupTargets[columnName.toLowerCase()] ?? []).find((item) => item.logicalName === value.entityType);
             if (!target?.entitySetName) throw new Error("Lookup target metadata is unavailable");
             setActionMessage(strings.saving);
@@ -667,6 +725,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
         setEditing((current) => current?.rowId === rowId && current.columnName === columnName ? { ...current, value } : current);
     };
     const addRowAt = (at: number) => {
+        if (props.isControlDisabled) return;
         const newRow: GridRow = { id: `local-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`, values: Object.fromEntries(columns.map((column) => [column.name, ""])), isDraft: true };
         setRows((current) => [...current.slice(0, at), newRow, ...current.slice(at)]);
         const firstEditable = columns.find((column) => editableColumnNames.has(column.name.toLowerCase())) ?? columns[0];
@@ -686,6 +745,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
         setEditing(null);
     };
     const saveDraft = async (rowId: string) => {
+        if (props.isControlDisabled) return;
         const row = rows.find((item) => item.id === rowId && item.isDraft);
         if (!row || !entityName) return;
         if (!props.sortOrderColumn) { setActionMessage(strings.sortOrderRequired); return; }
@@ -811,6 +871,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
                         <tbody>
                             {rows.map((row, index) => <SortableRow key={row.id} row={row} index={index} columns={columns} columnWidths={columnWidths}
                                 selected={selected.includes(row.id)} activeCell={activeCell} hovered={hovered === row.id} editing={editing} rawValues={rawValues} strings={strings}
+                                rowReadOnly={isRowReadOnly(row)}
                                 onHover={setHovered} onToggle={toggle} onSelectCell={selectCell} onNavigateCell={navigateCell} onFocusCell={focusCell} onInsertBefore={addRowBefore} onInsertAfter={addRowAfter}
                                 onContextMenu={openRowMenu}
                                 onStartEdit={(rowId, columnName, originalValue, lookup) => setEditing({ rowId, columnName, originalValue: row.values[columnName] ?? "", value: originalValue, lookup })}
@@ -818,7 +879,7 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
                                 onCommitEdit={(rowId, columnName, value) => { void commitEdit(rowId, columnName, value); }} onCommitLookup={(rowId, columnName, value) => { void commitLookup(rowId, columnName, value); }}
                                 choiceOptions={choiceOptions} lookupTargets={lookupTargets} metadataErrors={metadataErrors} metadataLoading={metadataLoading} fieldMetadata={fieldMetadata} webApi={props.webApi} language={props.language}
                                 onFinishEdit={() => setEditing(null)} onCancelEdit={() => cancelEdit()} />)}
-                            <tr className="ess-add-row"><td colSpan={columns.length + 1}><button type="button" onClick={() => addRowAt(rows.length)}>{strings.addRow}</button></td></tr>
+                            <tr className="ess-add-row"><td colSpan={columns.length + 1}><button type="button" disabled={props.isControlDisabled} onClick={() => addRowAt(rows.length)}>{strings.addRow}</button></td></tr>
                         </tbody>
                     </SortableContext>
                 </table>
@@ -831,10 +892,10 @@ export function EditableGrid(props: EditableGridProps): React.ReactElement {
             left: Math.max(4, Math.min(contextMenu.x, window.innerWidth - 180)),
             top: Math.max(4, Math.min(contextMenu.y, window.innerHeight - 132))
         }} onPointerDown={(event) => event.stopPropagation()}>
-            <button type="button" role="menuitem" onClick={() => { void copySelected(); }}>{strings.copy}{selected.length > 1 ? ` (${selected.length})` : ""}</button>
+            <button type="button" role="menuitem" disabled={props.isControlDisabled} onClick={() => { void copySelected(); }}>{strings.copy}{selected.length > 1 ? ` (${selected.length})` : ""}</button>
             <button type="button" role="menuitem" disabled={selected.length > 1 || !isPersistentRecordId(contextMenu.rowId)} title={selected.length > 1 ? strings.openRecordSingleOnly : !isPersistentRecordId(contextMenu.rowId) ? strings.openRecordSaveFirst : strings.openRecord}
                 onClick={() => { void openRecordForm(); }}>{strings.openRecord}</button>
-            <button type="button" role="menuitem" className="ess-context-delete" onClick={() => { void deleteSelected(); }}>{strings.delete}{selected.length > 1 ? ` (${selected.length})` : ""}</button>
+            <button type="button" role="menuitem" className="ess-context-delete" disabled={props.isControlDisabled} onClick={() => { void deleteSelected(); }}>{strings.delete}{selected.length > 1 ? ` (${selected.length})` : ""}</button>
         </div>, document.body)}
     </div>;
 }

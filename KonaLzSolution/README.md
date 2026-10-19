@@ -1,8 +1,8 @@
 # EditableSortableSubgrid — KonaLz
 
 - 发布者显示名称：`KonaLz`（中文、日文、英文相同）。
-- 控件版本：`1.0.4`。
-- 解决方案版本：`1.0.4.0`（Dataverse 解决方案使用四段版本号）。
+- 控件版本：`1.0.5`。
+- 解决方案版本：`1.0.5.0`（Dataverse 解决方案使用四段版本号）。
 - 发布者自定义前缀：`dev`。
 - 发布者内部唯一名称：`PowerAppsToolsPublisher_dev`。保留已有身份，以便升级当前使用 `dev_CustomControls.EditableSortableSubgrid` 的控件。
 
@@ -14,7 +14,7 @@
 dotnet build KonaLzSolution.cdsproj --configuration Release
 ```
 
-生成的非托管解决方案位于 `bin/Release/EditableSortableSubgrid.zip`。
+同时生成非托管解决方案 `bin/Release/EditableSortableSubgrid.zip` 和托管解决方案 `bin/Release/EditableSortableSubgrid_managed.zip`。
 
 ## 安装
 

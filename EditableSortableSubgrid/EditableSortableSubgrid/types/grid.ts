@@ -21,6 +21,8 @@ export interface EditableGridProps {
     navigation: ComponentFramework.Navigation;
     onSelectionChange: (ids: string[]) => void;
     language: number;
+    userId: string;
+    isControlDisabled: boolean;
     languageOverride?: string;
     editableColumns?: string;
     copyExcludedColumns?: string;

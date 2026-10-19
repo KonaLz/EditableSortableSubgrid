@@ -8,7 +8,7 @@
 
 English | [简体中文](#简体中文)
 
-Control version: **1.0.4** · Solution version: **1.0.4.0** · Publisher: **KonaLz**
+Control version: **1.0.5** · Solution version: **1.0.5.0** · Publisher: **KonaLz**
 
 ## Screenshots
 
@@ -34,6 +34,7 @@ Control version: **1.0.4** · Solution version: **1.0.4.0** · Publisher: **Kona
 - Dataset-backed grid that follows the current view's columns, labels, formatted values, row order, and paging.
 - Inline cell editing with automatic save when editing ends; Dataverse metadata is used to keep calculated and read-only columns non-editable.
 - Text, numeric, date, choice, Boolean, and lookup editors, subject to the field metadata and the user's Dataverse privileges.
+- Read-only rows cannot enter cell editing through double-click, F2, Enter, or typing. The control checks the row state, effective WriteAccess for the current user, and host read-only mode; it checks again before saving. Drag sorting remains available and is subject to Dataverse update permissions.
 - Cell selection and keyboard navigation with arrow keys, Tab, Enter, F2, and type-to-edit behavior.
 - Row selection synchronized with the host Dataset, so model-driven app commands can use the selected records.
 - Drag-and-drop row ordering with updates to a configured integer sort column.
@@ -107,7 +108,7 @@ Licensed under the [MIT License](LICENSE). Copyright (c) 2026 KonaLz. Third-part
 
 ## 简体中文
 
-控件版本：**1.0.4** · 解决方案版本：**1.0.4.0** · 发布者：**KonaLz**
+控件版本：**1.0.5** · 解决方案版本：**1.0.5.0** · 发布者：**KonaLz**
 
 **一个用于 Dataverse 模型驱动应用表单子网格的 PCF 控件，提供单元格编辑、键盘操作、记录菜单和行排序。**
 
@@ -124,6 +125,7 @@ Licensed under the [MIT License](LICENSE). Copyright (c) 2026 KonaLz. Third-part
 - 支持文本、数字、日期、选项、布尔值和查找字段编辑，具体取决于字段元数据和当前用户权限。
 - 支持单元格选择、方向键移动、Tab、Enter、F2 和按键直接开始输入。
 - 将行选择同步到宿主 Dataset，供模型驱动应用命令读取所选记录。
+- 只读行禁止双击、F2、Enter 和键盘输入进入单元格编辑；结合记录状态、当前用户的记录写入权限及宿主只读标记判断，保存前再次核对。拖动排序仍可使用，排序值保存受 Dataverse 更新权限约束。
 - 拖动行调整顺序，并写入绑定的整数排序字段。
 - 支持在空的关联子网格中创建首行并自动关联父记录，也支持继续添加后续行。
 - 支持读取视图默认列宽和拖动调整列宽。

@@ -32,6 +32,8 @@ export class EditableSortableSubgrid implements ComponentFramework.ReactControl<
             navigation: context.navigation,
             onSelectionChange: (ids: string[]) => synchronizeSelection(dataset, ids),
             language: context.userSettings.languageId,
+            userId: context.userSettings.userId,
+            isControlDisabled: context.mode.isControlDisabled,
             languageOverride: context.parameters.language?.raw,
             editableColumns: context.parameters.editableColumns?.raw ?? undefined,
             copyExcludedColumns: context.parameters.copyExcludedColumns?.raw ?? undefined,

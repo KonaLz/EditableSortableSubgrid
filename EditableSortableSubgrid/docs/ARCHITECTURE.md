@@ -1,6 +1,6 @@
 # System Architecture / 系统架构
 
-Control / 控件: **1.0.4** · Solution / 解决方案: **1.0.4.0** · Publisher / 发布者: **KonaLz**
+Control / 控件: **1.0.5** · Solution / 解决方案: **1.0.5.0** · Publisher / 发布者: **KonaLz**
 
 ## 中文
 
@@ -23,6 +23,7 @@ flowchart LR
     Select[SelectionService.ts: 同步行选择]
     Sort[SortingService.ts: 顺序算法]
     Key[KeyboardNavigation.ts: 键盘导航]
+    Access[RecordAccess.ts: WriteAccess]
     Err[Errors.ts: 错误文本归一化]
     API[Power Apps Web API / Dataverse]
     Host --> DS --> Entry --> Grid
@@ -33,6 +34,7 @@ flowchart LR
     Grid --> Select --> DS
     Grid --> Sort
     Grid --> Key
+    Grid --> Access --> API
     Grid --> Err
     Meta --> API
     Copy --> API
@@ -130,6 +132,7 @@ flowchart LR
     Select[SelectionService.ts: selection sync]
     Sort[SortingService.ts: ordering algorithms]
     Key[KeyboardNavigation.ts: keyboard behavior]
+    Access[RecordAccess.ts: WriteAccess]
     Err[Errors.ts: error normalization]
     API[Power Apps Web API / Dataverse]
     Host --> DS --> Entry --> Grid
@@ -140,6 +143,7 @@ flowchart LR
     Grid --> Select --> DS
     Grid --> Sort
     Grid --> Key
+    Grid --> Access --> API
     Grid --> Err
     Meta --> API
     Copy --> API
@@ -213,3 +217,25 @@ Previously, metadata was requested only for visible columns. A hidden parent loo
 The repository contains unit tests for metadata, parent resolution, hidden bindings, keyboard navigation, column widths, copying, and error parsing. For 1.0.3, two first-row regression tests and 19 metadata/copy relationship tests passed. Production build and solution packaging completed with zero warnings and errors. The project owner confirmed first-row creation in their environment. The local build also runs TypeScript, lint, and the PCF production build. A test harness is not a substitute for testing in a real tenant. Native command-bar behavior, flows, specific forms/views, security roles, lookup relationships, paging, and concurrent ordering must be verified in the target Power Apps environment.
 
 This project was programmed entirely with AI assistance. Bugs may remain. This document describes the current source design; it does not guarantee compatibility with every tenant, data integrity, or fitness for production. Review the code and validate with non-production data first.
+
+## v1.0.5 — 记录只读保护 / Record read-only protection
+
+### 中文
+
+- index.ts 将当前用户 ID 与 context.mode.isControlDisabled 传给表格。RecordAccess.ts 使用 Dataverse RetrievePrincipalAccess 查询当前用户对每条记录的有效 WriteAccess，覆盖角色、所有权、团队和共享权限。
+- 表格独立读取 statecode，不要求状态列出现在视图中；判断不依赖“非激活”等本地化显示名称。当前保守策略仅允许 statecode = 0 且具备写入权限的已有记录编辑。
+- 记录状态按最多 50 条一批读取，权限检查并发最多 5 条。状态或权限尚未确认、查询失败时，已有行保持只读；失败时提示刷新重试。
+- 双击与键盘进入编辑共用只读判断，普通值、日期、选项和查找保存前再次读取状态及权限。宿主整体只读时也阻止新建、复制、删除。
+- 排序是明确例外：只读行仍可拖动，排序流程不套用单元格只读限制，最终更新由 Dataverse 决定是否允许。
+- 自定义表单脚本、业务规则或插件定义的额外锁定不一定由上述接口公开，不能保证自动识别。服务端仍是最终校验；客户端检查与更新之间不是原子事务。
+- 已通过 TypeScript 检查、构建和 3 项 RecordAccess 测试；仍需在目标 Power Apps 环境验证状态变更、权限变化和排序。
+
+### English
+
+- index.ts passes the current user ID and context.mode.isControlDisabled to the grid. RecordAccess.ts calls Dataverse RetrievePrincipalAccess to check effective WriteAccess for each row, including role, ownership, team and sharing rights.
+- statecode is loaded separately even when absent from the view. Checks do not depend on localized state labels. The current conservative policy permits editing existing rows only when statecode = 0 and effective write access is present.
+- States load in batches of up to 50 and access checks run with at most 5 concurrent requests. Existing rows remain read-only while checks are pending or fail; failures prompt a refresh and retry.
+- Mouse and keyboard entry share the same read-only gate. Scalar, date, choice and lookup commits recheck state and write access before saving. Host read-only mode also blocks create, copy and delete actions.
+- Sorting is an explicit exception: read-only rows remain draggable and sorting does not apply the cell-editing gate. Dataverse still enforces update permissions.
+- Additional locks imposed by custom form scripts, business rules or plugins may not be exposed by these APIs and cannot be guaranteed to be detected automatically. Server enforcement remains authoritative; client checks and writes are not atomic.
+- TypeScript checks, the build and 3 RecordAccess tests passed. Target-environment verification of state changes, permission changes and sorting is still needed.
